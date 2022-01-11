@@ -7,6 +7,8 @@ interface UserProps {
 
 type Callback = () => void;
 
+const URL: string = 'http://localhost:3000/users';
+
 export class User {
   events: { [key: string]: Callback[] } = {};
   constructor(private data: UserProps) {}
@@ -36,9 +38,18 @@ export class User {
 
   fetch(): void {
     axios
-      .get(`http://localhost:3000/users/${this.get('id')}`)
+      .get(`${URL}/${this.get('id')}`)
       .then((response: AxiosResponse): void => {
         this.set(response.data);
       });
+  }
+
+  save(): void {
+    const id = this.get('id');
+    if (id) {
+      axios.put(`${URL}/${id}`, this.data);
+    } else {
+      axios.post(`${URL}`, this.data);
+    }
   }
 }
